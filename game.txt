@@ -1,0 +1,45 @@
+game
+	├── start() -> GameID  							开始游戏
+	├── stop(Gid)    								停止游戏
+	├── save()    									保存帮助
+	├── load()   									加载存档
+	└── help()    									游戏帮助
+
+player
+	├── init(Name, Sex)->PlayerID       			设置人物
+	├── curr_fight(PlayerID)  						当前的战斗 
+	├── attack(Fight, Type, Target)	    			攻击 
+	└── property(PlayerID)    						查看属性
+
+gmap
+	├── cities()      								列出所有的city
+	├── curr_city(PlayerID)  						当前所在的city
+	└── move(PlayerID, City)      					去到某个city
+
+talk
+	└── to(PlayerIDA, PlayerIDB)      				对话
+
+fight
+	├── start(PlayerIDA, PlayerIDB) -> FightID  	开始攻击
+	└── stop(Fight, PlayerID)    		   			结束攻击
+
+object_type
+
+
+object
+	├── add(Type, Name, Max, Propety) -> ObjID  	新增物品
+	├── remove(ObjID)   							移除物品
+	├── update(ObjID, Type, Name, Max, Propety)		升级物品
+	└── get(ObjID)    								获取物品属性
+
+equipment
+	├── add(PlayerID) -> EqpID		   		     	player绑定装备id
+	├── add_obj(PlayerID, ObjID)  					装备物品 
+	├── replace(PlayerID, ObjID1, ObjID2)	    	替换装备
+	└── get(EqpID)    								升级物品
+
+bag
+	├── add(PlayerID) -> BagID		   		     	player绑定背包id
+	├── add_obj(BagID, ObjID)  						装备放入背包
+	├── remove_obj(BagID, ObjID1)	    			装备移除背包
+	└── get(BagID)    								获取背包物品列表
