@@ -15,26 +15,26 @@ start() ->
 
 fight_loop() ->
     {PN, H, A} = create_player(),
+    io:format("玩家:~ts HP: ~p 攻击: ~p~n", [PN, H, A]),
     {MN, MH, MA} = create_monster(),
-    fight({PN, H, A},  {MN, MH, MA}),
-    fight_loop().
+    io:format("怪物:~ts HP: ~p 攻击: ~p~n", [MN, MH, MA]),
+    fight({PN, H, A},  {MN, MH, MA}).
+    %%fight_loop().
 
 create_player() ->
     %% 随机生成姓名
     Names = #{ 1 => "刘三猫", 2 => "杨蝌蚪", 3 => "张咪咪", 4 => "成大腿", 5 => "二狗蛋"},
     Name_num = random:uniform(5),
     #{Name_num := Player_name} = Names,
-    io:format("~ts~n", [Player_name]),
      
     %% 随机生成hp值，200～250之间
     Hp_Radom = random:uniform(50),
     Hp = Hp_Radom + 200,
-    io:format("~p~n", [Hp]),
     
     %% 攻击值10～20之间
     Attack_Random = random:uniform(10),
     Attack = 10 + Attack_Random,
-    io:format("~p~n", [Attack]),
+
     {Player_name, Hp, Attack}.
     
 create_monster() ->
@@ -42,17 +42,15 @@ create_monster() ->
     M_Names = #{ 1 => "猴赛雷", 2 => "巴扎嘿", 3 => "呀咩蝶", 4 => "哥斯拉", 5 => "尼玛嗨"},
     M_Name_num = random:uniform(5),
     #{M_Name_num := Monster_name} = M_Names,
-    io:format("~ts~n", [Monster_name]),
      
     %% 随机生成hp值，200～250之间
     M_Hp_Radom = random:uniform(50),
     M_Hp = M_Hp_Radom + 200,
-    io:format("~p~n", [M_Hp]),
     
     %% 攻击值10～20之间
     M_Attack_Random = random:uniform(10),
     M_attack = 10 + M_Attack_Random,
-    io:format("~p~n", [M_attack]),
+ 
     {Monster_name, M_Hp, M_attack}.
 
 
@@ -79,6 +77,6 @@ fight_round_loop({P_N, P_H, P_A} = P0, {M_N, M_H, M_A} = M0) ->
 %% A -> B
 %% return: {A', B'}
 fight_round({A_N, A_H, A_A}, {B_N, B_H, B_A}) ->
-    io:format("~ts 攻击 ~ts, 造成了~p点伤害~n", [A_N, B_N, A_A]),
+    io:format("~ts 攻击 ~ts, 造成了~p点伤害, ~ts还剩~p点血。~n", [A_N, B_N, A_A, B_N, B_H-A_A]),
     {{A_N, A_H, A_A}, {B_N, B_H-A_A, B_A}}.
 
