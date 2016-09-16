@@ -8,19 +8,19 @@
 %%%-------------------------------------------------------------------
 
 -module(game).
--export([start/0, stop/1, save/1, load/1, help/0]).
+-export([start/0, stop/1, save/1, load/1, help/0, core/0, loop/1]).
 
 start() ->
-    GameId = spwan(game, core, []),
-    GameId ! {get, self()}
+    GameId = spawn(game, core, []),
+    GameId ! {get, self()},
     receive
-	Reslut ->
-	    Reslut
+	Pmid ->
+	   {GameId, Pmid}    
     end.
 
-
 stop(GameId) ->
-    todo.
+    %io:format('Game stop, bye~', []),
+    exit(GameId,"Game stop").
 
 save(PlayerId) ->
     todo.
@@ -31,16 +31,16 @@ load(PlayerId) ->
 help() ->
     todo.
     
-core ->
+core() ->
     PMId = player_manager:start_link(),
-    loop
+    loop(PMId).
 
 loop(PID) ->
     receive
 	{get, From} ->
-	    PID,
-	    loop(PID)	
-	stop->
-	     exit
-     end.
+	    From ! PID,
+	    loop(PID);	
+	stop ->
+	    todo
+    end.
 	     

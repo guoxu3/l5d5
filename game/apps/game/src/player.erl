@@ -7,16 +7,8 @@
 %%% Created :  4 Seq 2016 by guoxu <guoxu3@qq.com>
 %%%-------------------------------------------------------------------
 
--module(player_manager).
--export([start_link/0, init/0]).
+-module(player).
+-export([go/0]).
 
-start_link() ->
-    spawn_link(player_manager, init, []).
-
-init() ->
-    receive
-	go ->
-	    io:format("go a go")
-    end.
-    	
-
+go() ->
+    io:format("").
