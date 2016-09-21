@@ -8,7 +8,7 @@
 %%%-------------------------------------------------------------------
 
 -module(game1).
--export([start/0, fight_loop/0, create_player/0, create_monster/0, fight/2, fight_round_loop/2, fight_round/2]).
+-export([start/0, fight_loop/0, fight_loop/2, create_player/0, create_monster/0, fight/2, fight_round_loop/2, fight_round/2]).
 -record(role, {name, health, attack}).
 
 start() ->
@@ -19,8 +19,26 @@ fight_loop() ->
     io:format("玩家:~ts HP: ~p 攻击: ~p~n", [A#role.name, A#role.health, A#role.attack]),
     B = create_monster(),
     io:format("怪物:~ts HP: ~p 攻击: ~p~n", [B#role.name, B#role.health, B#role.attack]),
-    fight(A, B).
+    fight_loop(A, B).
+
     %%fight_loop().
+fight_loop(A, B) ->
+    W = fight(A, B),
+    if  W#role.name =:= B#role.name ->
+            io:format("战斗结束, ~ts获胜！~n", [B#role.name]);
+        true ->
+            io:format(" ~ts获胜！重新生成怪物再打~n", [W#role.name]),
+            NewB = create_monster(),
+            io:format("怪物:~ts HP: ~p 攻击: ~p~n", [NewB#role.name, NewB#role.health, NewB#role.attack]),
+            NewA = fix_player(W),
+            io:format("玩家回血:~ts HP: ~p 攻击: ~p~n", [NewA#role.name, NewA#role.health, NewA#role.attack]),
+            fight_loop(NewA, NewB)
+        end.
+
+fix_player(P) ->
+    OldHealth = P#role.health,
+    NewHealth = OldHealth + 150,
+    P#role{health=NewHealth}.
 
 create_player() ->
     %% 随机生成姓名
@@ -58,8 +76,13 @@ create_monster() ->
 fight(A, B) ->
     io:format("战斗开始 ~ts对阵~ts ~n", [A#role.name, B#role.name]),
     {A1, B1} = fight_round_loop(A, B),
-    Winner = if A1#role.health > 0 -> A1#role.name; true -> B1#role.name end,
-    io:format("战斗结束, ~ts获胜！~n", [Winner]).
+    if  A1#role.health > 0 -> 
+            A1; 
+        true -> 
+            B1
+    end.
+   %% 
+
 
 fight_round_loop(A, B) ->
     {A1, B1} = fight_round(A, B),
