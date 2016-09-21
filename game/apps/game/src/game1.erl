@@ -15,11 +15,11 @@ start() ->
     fight_loop().
 
 fight_loop() ->
-    {PN, H, A} = create_player(),
-    io:format("玩家:~ts HP: ~p 攻击: ~p~n", [PN, H, A]),
-    {MN, MH, MA} = create_monster(),
-    io:format("怪物:~ts HP: ~p 攻击: ~p~n", [MN, MH, MA]),
-    fight({PN, H, A},  {MN, MH, MA}).
+    A = create_player(),
+    io:format("玩家:~ts HP: ~p 攻击: ~p~n", [A#role.name, A#role.health, A#role.attack]),
+    B = create_monster(),
+    io:format("怪物:~ts HP: ~p 攻击: ~p~n", [B#role.name, B#role.health, B#role.attack]),
+    fight(A, B).
     %%fight_loop().
 
 create_player() ->
@@ -55,22 +55,22 @@ create_monster() ->
     #role{name=Monster_name, health=M_Hp, attack=M_attack}.
 
 
-fight({P_N, P_H, P_A}, {M_N, M_H, M_A}) ->
-    io:format("战斗开始 ~ts对阵~ts ~n", [P_N, M_N]),
-    {{F_P_N, F_P_H, F_P_A}, {F_M_N, F_M_H, F_M_A}} = fight_round_loop({P_N, P_H, P_A}, {M_N, M_H, M_A}),
-    Winner = if F_P_H > 0 -> F_P_N; true -> F_M_N end,
+fight(A, B) ->
+    io:format("战斗开始 ~ts对阵~ts ~n", [A#role.name, B#role.name]),
+    {A1, B1} = fight_round_loop(A, B),
+    Winner = if A1#role.health > 0 -> A1#role.name; true -> B1#role.name end,
     io:format("战斗结束, ~ts获胜！~n", [Winner]).
 
-fight_round_loop({P_N, P_H, P_A} = P0, {M_N, M_H, M_A} = M0) ->
-    {P1, {_, M1_H, _} = M1} = fight_round(P0, M0),
-    if M1_H < 0 ->
-	    {P1, M1};
+fight_round_loop(A, B) ->
+    {A1, B1} = fight_round(A, B),
+    if B1#role.health < 0 ->
+	    {A1, B1};
        true ->
-	    {M2, {_, P2_H, _} = P2} = fight_round(M1, P1),
-	    if P2_H < 0 ->
-		    {P2, M2};
+	    {B2, A2} = fight_round(B1, A1),
+	    if A2#role.health < 0 ->
+		    {A2, B2};
 	       true ->
-		    fight_round_loop(P2, M2)
+		    fight_round_loop(A2, B2)
 	    end
     end.
 
