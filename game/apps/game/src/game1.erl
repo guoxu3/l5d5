@@ -9,6 +9,7 @@
 
 -module(game1).
 -export([start/0, fight_loop/0, create_player/0, create_monster/0, fight/2, fight_round_loop/2, fight_round/2]).
+-record(role, {name, health, attack}).
 
 start() ->
     fight_loop().
@@ -35,7 +36,7 @@ create_player() ->
     Attack_Random = random:uniform(10),
     Attack = 10 + Attack_Random,
 
-    {Player_name, Hp, Attack}.
+    #role{name=Player_name, health=Hp, attack=Attack}.
     
 create_monster() ->
     %% 随机生成姓名
@@ -51,7 +52,7 @@ create_monster() ->
     M_Attack_Random = random:uniform(10),
     M_attack = 10 + M_Attack_Random,
  
-    {Monster_name, M_Hp, M_attack}.
+    #role{name=Monster_name, health=M_Hp, attack=M_attack}.
 
 
 fight({P_N, P_H, P_A}, {M_N, M_H, M_A}) ->
@@ -76,7 +77,8 @@ fight_round_loop({P_N, P_H, P_A} = P0, {M_N, M_H, M_A} = M0) ->
 %% args: A, B
 %% A -> B
 %% return: {A', B'}
-fight_round({A_N, A_H, A_A}, {B_N, B_H, B_A}) ->
-    io:format("~ts 攻击 ~ts, 造成了~p点伤害, ~ts还剩~p点血。~n", [A_N, B_N, A_A, B_N, B_H-A_A]),
-    {{A_N, A_H, A_A}, {B_N, B_H-A_A, B_A}}.
+fight_round(A, B) ->
+    io:format("~ts 攻击 ~ts, 造成了~p点伤害, ~ts还剩~p点血。~n", [A#role.name, B#role.name, A#role.attack, B#role.name, B#role.health-A#role.attack]),
+    NewB = B#role{health=B#role.health-A#role.attack},
+    {A, NewB}.
 
