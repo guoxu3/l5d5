@@ -11,8 +11,10 @@
 -export([start/0, fight_loop/0, fight_loop/2, create_player/0, create_monster/0, fight/2, fight_round_loop/2, fight_round/2]).
 -record(role, {name, health, attack}).
 
+
 start() ->
     fight_loop().
+
 
 fight_loop() ->
     A = create_player(),
@@ -21,7 +23,7 @@ fight_loop() ->
     io:format("怪物:~ts HP: ~p 攻击: ~p~n", [B#role.name, B#role.health, B#role.attack]),
     fight_loop(A, B).
 
-    %%fight_loop().
+
 fight_loop(A, B) ->
     W = fight(A, B),
     if  W#role.name =:= B#role.name ->
@@ -35,10 +37,12 @@ fight_loop(A, B) ->
             fight_loop(NewA, NewB)
         end.
 
+
 fix_player(P) ->
     OldHealth = P#role.health,
     NewHealth = OldHealth + 150,
     P#role{health=NewHealth}.
+
 
 create_player() ->
     %% 随机生成姓名
@@ -55,7 +59,8 @@ create_player() ->
     Attack = 10 + Attack_Random,
 
     #role{name=Player_name, health=Hp, attack=Attack}.
-    
+ 
+
 create_monster() ->
     %% 随机生成姓名
     M_Names = #{ 1 => "猴赛雷", 2 => "巴扎嘿", 3 => "呀咩蝶", 4 => "哥斯拉", 5 => "尼玛嗨"},
@@ -81,7 +86,6 @@ fight(A, B) ->
         true -> 
             B1
     end.
-   %% 
 
 
 fight_round_loop(A, B) ->
@@ -96,6 +100,7 @@ fight_round_loop(A, B) ->
 		    fight_round_loop(A2, B2)
 	    end
     end.
+
 
 %% args: A, B
 %% A -> B
